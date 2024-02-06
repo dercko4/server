@@ -30,7 +30,7 @@ const UserFiles = sequelize.define('user_files', {
     filename: {type: DataTypes.STRING, allowNull: true},
     format_file: {type: DataTypes.STRING, allowNull: true},
     size_file: {type: DataTypes.STRING, allowNull:true},
-    filetype: {type: DataTypes.STRING, allowNull:false}
+    filetype: {type: DataTypes.STRING}
 })
 
 User.hasMany(FriendsUsers)

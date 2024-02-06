@@ -6,9 +6,13 @@ const Cryptojs = require('crypto-js')
 const router = require('./routes/index')
 const cors = require('cors')
 
-const PORT = process.env.PORT
 
+const http = require('http')
+const HOST='10.1.66.46'
+const PORT = process.env.PORT
 const app = express()
+const server = http.createServer(app)
+
 
 app.use(cors())
 app.use(express.json())
@@ -22,7 +26,7 @@ const start = async () => {
     try{
         await sequelize.authenticate()
         await sequelize.sync()
-        app.listen(PORT, () => console.log(`Server start on ${PORT} `))
+        server.listen(PORT, HOST, () => console.log(`Server start on ${HOST}:${PORT}`))
     }
     catch(e){
         console.log(e)

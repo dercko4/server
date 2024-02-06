@@ -17,7 +17,7 @@ class AuthController
 {
   async registration(req, res, next)
   {
-    const {nickname, tag_user, email, password, role} = req.body
+    const {nickname, tag_user, email, password} = req.body
     if (!nickname)
     {
       return next(ApiError.badRequest('Некорректный никнейм'))
@@ -35,7 +35,7 @@ class AuthController
       return next(ApiError.badRequest('Некорректный пароль'))
     }
     let candidate = await User.findOne({where: {email}})
-    if (candidate)
+    if (candidate)  
     {
       return next(ApiError.badRequest('Пользователь с таким email уже существует'))
     }
@@ -45,7 +45,7 @@ class AuthController
         return next(ApiError.badRequest('Пользователь с таким тэгом уже существует'))
     }
     const hashPassword = await bcrypt.hash(password, 5)
-    const user = await User.create({nickname, tag_user, email, password: hashPassword, role})
+    const user = await User.create({nickname, tag_user, email, password: hashPassword})
     const token = generateJwt(user.nickname, user.tag_user, user.email, user.password, user.role)
     return res.json({token})
   }
