@@ -8,7 +8,7 @@ const cors = require('cors')
 
 
 const http = require('http')
-const HOST='10.1.66.44'
+const HOST=process.env.HOST
 const PORT = process.env.PORT
 const app = express()
 const server = http.createServer(app)
