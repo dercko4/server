@@ -17,15 +17,7 @@ class AuthController
 {
   async registration(req, res, next)
   {
-    const {nickname, tag_user, email, password} = req.body
-    if (!nickname)
-    {
-      return next(ApiError.badRequest('Некорректный никнейм'))
-    }
-    if (!tag_user)
-    {
-      return next(ApiError.badRequest('Некорректный тэг пользователя!'))
-    }
+    const {email, password, password_check} = req.body
     if (!email)
     {
       return next(ApiError.badRequest('Некорректный email'))
@@ -34,6 +26,7 @@ class AuthController
     {
       return next(ApiError.badRequest('Некорректный пароль'))
     }
+    if(password!==password_check) return next(ApiError.badRequest('Пароли не совпадают!'))
     let candidate = await User.findOne({where: {email}})
     if (candidate)  
     {
@@ -45,8 +38,8 @@ class AuthController
         return next(ApiError.badRequest('Пользователь с таким тэгом уже существует'))
     }
     const hashPassword = await bcrypt.hash(password, 5)
-    const user = await User.create({nickname, tag_user, email, password: hashPassword})
-    const token = generateJwt(user.nickname, user.tag_user, user.email, user.password, user.role)
+    const user = await User.create({email, password: hashPassword})
+    const token = generateJwt(user.email, user.password, user.role)
     return res.json({token})
   }
 
