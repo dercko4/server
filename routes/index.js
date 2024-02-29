@@ -2,8 +2,9 @@ const Router = require('express')
 const routes = new Router()
 const authRoutes = require('./authRouter')
 const editProfileRoutes = require('./editProfileRouter')
+const changePassRouter = require('./changePassRouter')
 
 routes.use('/auth', authRoutes)
-routes.use('/edit', editProfileRoutes)
+routes.use('/edit', editProfileRoutes, changePassRouter)
 
 module.exports=routes

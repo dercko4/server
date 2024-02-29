@@ -4,33 +4,26 @@ const {User} = require('../models/model')
 const {QueryTypes} = require('sequelize')
 const sequelize = require('../database')
 
-class AuthController 
+class changePassController
 {
     async changePass(req, res, next)
     {
-        const id_user = req.user.id_user
-        const {nickname, email} = req.body
+        const {email, old_password, new_password, new_password_check} = req.body
+        if(!email) return next(ApiError.badRequest(`Вы не указали email!`))
+        if(!new_password||!new_password_check) return next(ApiError.badRequest(`Вы должны ввести новый пароль!`))
+        if(new_password!==new_password_check) return next(ApiError.badRequest(`Новые пароли не совпадают!`))
+        const candidate = await User.findOne({where: {email}})
+        if(!candidate) return next(ApiError.badRequest(`Пользователь с таким Email=${email} не найден!`))
+        let comparePassword = bcrypt.compareSync(old_password, candidate.password)
+        if(!comparePassword) return next(ApiError.badRequest(`Вы указали неверный старый пароль!`))
+        let hashPassword = await bcrypt.hash(new_password, 5)
         try {
-            if(nickname&&email)
-            {
-                await sequelize.query(`UPDATE "users" SET nickname='${nickname}', email='${email}' WHERE id_user=${id_user}`)
-                return res.json({message: `Никнейм и email у пользователя с ID=${id_user} изменен`})
-            }
-            if(nickname)
-            {
-                await sequelize.query(`UPDATE "users" SET nickname='${nickname}' WHERE id_user=${id_user}`)
-                return res.json({message: `Никнейм у пользователя с ID=${id_user} изменен`})
-            }
-            if(email)
-            {
-                await sequelize.query(`UPDATE "users" SETemail='${email}' WHERE id_user=${id_user}`)
-                return res.json({message: `Email у пользователя с ID=${id_user} изменен`})
-            }
+            await sequelize.query(`UPDATE "users" SET password='${hashPassword}' WHERE email='${email}'`)
         } catch (error) {
             console.log(error)
-            next(ApiError.badRequest('Не удалось изменить данные'))
+            return next(ApiError.badRequest(`Что-то пошло не так`))
         }
     }
 }
 
-module.exports = new AuthController()
+module.exports = new changePassController()

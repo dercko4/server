@@ -22,7 +22,7 @@ app.use(function (req, res, next) {
 
 app.use(cors())
 app.use(express.json())
-app.use('/home', router)
+app.use('/cwh', router)
 app.get('/',(req,res) =>
 {
     res.status(200).json({massage:'working'})
