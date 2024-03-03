@@ -27,9 +27,10 @@ const UserSessions = sequelize.define('user_sessuions', {
 const UserFiles = sequelize.define('user_files', {
     id_file: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
     filename: {type: DataTypes.STRING, allowNull: true},
-    format_file: {type: DataTypes.STRING, allowNull: true},
-    size_file: {type: DataTypes.STRING, allowNull:true},
-    filetype: {type: DataTypes.STRING}
+    format_file: {type: DataTypes.STRING},
+    size_file: {type: DataTypes.STRING},
+    filetype: {type: DataTypes.STRING},
+    favorite: {type: DataTypes.BOOLEAN, defaultValue: false}
 })
 
 User.hasMany(FriendsUsers)
