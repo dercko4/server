@@ -27,16 +27,16 @@ class addFileController
         if(!req.files) return next(ApiError.badRequest(`Не удалось взять файл!`))
         if(!req.files.file_avatar) return next(ApiError.badRequest(`Не удалось взять файл!`))
         const file = req.files.file_avatar
+        if(file.mimetype.split('/')[0]!=="image") return next(ApiError.badRequest(`Была загружена не фотография!`))
         const avatar_name = file.name
         let path_avatar = __dirname + "/avatars/" + id_user
-        await fs.mkdir(path_avatar, err=>{
-            if(err) throw err; // не удалось создать папку
-            else console.log('Папка успешно создана');
-        }
-        )
-        path_avatar += avatar_name
-        await file.mv(path_avatar)
-        const file_db = await sequelize.query(`UPDATE "users" SET path_avatar='${path_avatar}' WHERE id_user='${id_user}'`)
+        fs.mkdir(path_avatar, { recursive: true }, (error) => {
+            if (!error) {
+              console.log('Directory successfully created, or it already exists.');
+            }})
+        let path_avatar1 = path_avatar + '/' +avatar_name
+        await file.mv(path_avatar1)
+        const file_db = await sequelize.query(`UPDATE "users" SET path_avatar='${path_avatar1}' WHERE id_user='${id_user}'`)
         return res.sendFile(`${path_avatar}`)
     }
 }
