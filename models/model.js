@@ -1,3 +1,4 @@
+
 const sequelize = require('../database')
 const {DataTypes} = require('sequelize')
 
@@ -6,22 +7,8 @@ const User = sequelize.define('users',{
     nickname: {type: DataTypes.STRING, unique: true},
     email: {type: DataTypes.STRING, allowNull: true, unique: true},
     password: {type: DataTypes.STRING, allowNull:true},
-    role: {type: DataTypes.STRING, defaultValue: "user"}
-})
-
-const FriendsUsers = sequelize.define('friends_users', {
-    id_wire: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
-    id_friend: {type: DataTypes.INTEGER, allowNull: true},
-})
-
-const RequestInFriends = sequelize.define('request_in_friends', {
-    id_request_in_friends: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
-    id_mb_friend: {type: DataTypes.INTEGER, allowNull: true},
-})
-
-const UserSessions = sequelize.define('user_sessuions', {
-    id_session: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
-    ip_user: {type: DataTypes.STRING, allowNull: true}
+    role: {type: DataTypes.STRING, defaultValue: "user"},
+    path_avatar: {type: DataTypes.STRING}
 })
 
 const UserFiles = sequelize.define('user_files', {
@@ -33,23 +20,20 @@ const UserFiles = sequelize.define('user_files', {
     favorite: {type: DataTypes.BOOLEAN}
 })
 
-User.hasMany(FriendsUsers)
-FriendsUsers.belongsTo(User)
+const UserStorage = sequelize.define('user_storages', {
+    id_storage: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true}
+})
 
-User.hasMany(RequestInFriends)
-RequestInFriends.belongsTo(User)
 
-User.hasMany(UserSessions)
-UserSessions.belongsTo(User)
+User.hasMany(UserStorage)
+UserStorage.belongsTo(User)
 
-User.hasMany(UserFiles)
-UserFiles.belongsTo(User)
+UserStorage.hasMany(UserFiles)
+UserFiles.belongsTo(UserStorage)
 
 module.exports=
 {
     User,
-    FriendsUsers,
-    UserSessions,
     UserFiles,
-    RequestInFriends
+    UserStorage
 }

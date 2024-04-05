@@ -6,7 +6,6 @@ const changePassRouter = require('./changePassRouter')
 const addfileRouter = require('./addFileRouter')
 
 routes.use('/auth', authRoutes)
-routes.use('/edit', editProfileRoutes, changePassRouter)
-routes.use('/upload', addfileRouter)
+routes.use('/edit', editProfileRoutes, changePassRouter, addfileRouter)
 
 module.exports=routes
