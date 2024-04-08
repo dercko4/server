@@ -6,7 +6,7 @@ const Cryptojs = require('crypto-js')
 const router = require('./routes/index')
 const cors = require('cors')
 const fileUpload = require('express-fileupload');
-const {User} = require('./models/model')
+const {User, UserStorage} = require('./models/model')
 
 const http = require('http')
 const HOST=process.env.HOST
@@ -29,7 +29,8 @@ app.use(express.static('public'));
 app.use('/cwh', router)
 app.get('/',async (req,res) =>
 {
-    const super1 = await User.findOne({where: {id_user: 1}})
+    const super1 = await UserStorage.findOne({where: {userIdUser: 3}})
+    res.json(super1.id_storage)
 }
 
 )

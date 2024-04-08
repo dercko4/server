@@ -1,7 +1,9 @@
 const ApiError = require('../ApiError')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
-const {User} = require('../models/model')
+const {User, UserStorage} = require('../models/model')
+const sequelize = require('../database');
+const fs = require('fs')
 
 const generateJwt = (id_user, nickname, email, role) => 
 {
@@ -34,6 +36,14 @@ class AuthController
     }
     const hashPassword = await bcrypt.hash(password, 5)
     const user = await User.create({email, password: hashPassword})
+    let select_for_storage = await sequelize.query(`SELECT id_user FROM "users" WHERE email='${email}'`)
+    const user_storage = await UserStorage.create({userIdUser: select_for_storage[0][0].id_user})
+    const select_storage = await UserStorage.findOne({where: {userIdUser: select_for_storage[0][0].id_user}})
+    let path_storage = __dirname + "/storages/" + select_storage.id_storage
+        fs.mkdir(path_storage, { recursive: true }, (error) => {
+            if (!error) {
+              console.log('Directory successfully created, or it already exists.');
+            }})
     const token = generateJwt(user.id_user, user.email, user.password, user.role)
     return res.json({token})
   }
